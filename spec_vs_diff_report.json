@@ -1,0 +1,32 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-03-02T09:12:21.292Z",
+  "summary": "REQ-14 requires fixing `fetchAllMilkRecords` in `frontend/src/lib/supabase.ts` to use correct headers (`apikey` and `Authorization: Bearer <anon-key>`) and the proper REST URL, enabling the 'Download as Excel' button to export a `.xlsx` file via SheetJS. The diff modifies `MilkDeliveryPanel.tsx` and `frontend/src/lib/supabase.ts` (per file summary), but the actual implementation in `supabase.ts` is not shown in detail. The `MilkDeliveryPanel.tsx` diff reveals that the download functionality generates a CSV file (not `.xlsx`) using browser-native Blob/URL APIs and saves it as `MilkDelivery.csv` — not a `.xlsx` file using SheetJS as required.",
+  "missing_requirements": [
+    {
+      "id": "REQ-14",
+      "requirement": "A .xlsx file is downloaded containing columns: Date, MilkDelivered, Packets using SheetJS.",
+      "reason": "The implementation generates a CSV file (MilkDelivery.csv) using browser-native Blob/URL APIs, not a .xlsx file using SheetJS. The file is saved with a .csv extension and uses CSV formatting, not the Excel binary format.",
+      "evidence": [
+        "frontend/src/components/MilkDeliveryPanel.tsx",
+        "frontend-file-summaries.txt"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "CSV download instead of .xlsx: The implementation creates a CSV file with a UTF-8 BOM and saves it as 'MilkDelivery.csv' using Blob/URL browser APIs, which is not what was requested.",
+      "reason": "The build request explicitly requires a `.xlsx` file downloaded using SheetJS. The diff implements a CSV download with no SheetJS dependency.",
+      "evidence": [
+        "frontend/src/components/MilkDeliveryPanel.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.85,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/components/MilkDeliveryPanel.tsx",
+    "project_state.json"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "backend/main.mo": "Empty Motoko actor serving as the ICP backend placeholder with no implemented functionality.",
+  "feature_evidence.json": "Feature evidence report file with an empty features array, indicating no features have been documented yet.",
+  "frontend-file-summaries.txt": "JSON document containing short descriptions of each frontend source file, summarizing their purpose and key implementation details.",
+  "frontend/index.css": "Global Tailwind CSS entry point defining OKLCH-based CSS custom properties for light and dark theme tokens including colors, borders, and sidebar variables.",
+  "frontend/index.html": "Minimal HTML shell for the React app titled 'Working Days Counter Application' that mounts the app into a root div and loads the main TSX entry point.",
+  "frontend/src/App.tsx": "Main dashboard component that calculates and displays days to 30th May (excluding Sundays) alongside WeatherPanel, PrayerTimesPanel, GasRefillPanel, and MilkDeliveryPanel in a responsive grid layout.",
+  "frontend/src/components/GasRefillPanel.tsx": "Static card component displaying home cooking gas change dates and a list of three refill delivery dates, styled to match the dark brown theme.",
+  "frontend/src/components/MilkDeliveryPanel.tsx": "Card component with a form to log daily milk delivery records to Supabase and a button to download all records as a CSV file using only browser-native APIs.",
+  "frontend/src/components/PrayerTimesPanel.tsx": "Component that fetches and displays the five daily Islamic prayer times for Rajakilpakkam using the Aladhan API with Shafi calculation settings, refreshing daily at midnight.",
+  "frontend/src/components/WeatherPanel.tsx": "Component that fetches current temperature and average daily rain probability for Rajakilpakkam from the Open-Meteo API, refreshing every hour.",
+  "frontend/src/hooks/useActor.ts": "React hook that creates and caches an ICP backend actor using React Query, returning either an authenticated or anonymous actor based on the current Internet Identity, and invalidating dependent queries when the actor changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Provides an InternetIdentityProvider component and useInternetIdentity hook for managing ICP Internet Identity authentication state, including login, logout, and identity persistence via AuthClient.",
+  "frontend/src/hooks/useQueries.ts": "Intentionally empty placeholder file indicating no backend queries are needed since all calculations are done client-side.",
+  "frontend/src/index.css": "Global CSS file that sets up Tailwind directives and defines a dark brown OKLCH color theme for both light and dark modes via CSS custom properties.",
+  "frontend/src/lib/supabase.ts": "Lightweight Supabase REST client using native fetch (avoiding the @supabase/supabase-js package) that provides insertMilkRecord and fetchAllMilkRecords functions for the MilkDB table.",
+  "frontend/src/main.tsx": "Application entry point that renders the React app wrapped with QueryClientProvider and InternetIdentityProvider.",
+  "frontend/tailwind.config.js": "Tailwind CSS configuration defining OKLCH-based color tokens, custom border radii, accordion keyframe animations, and enabling typography, container-queries, and animate plugins.",
+  "project_state.json": "Project state metadata (version 17) describing the dashboard app's features, known issues, and architectural notes including Supabase integration details for the MilkDB table."
+}

@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 17,
+  "summary": "Dashboard app with multiple panels: Gas Refill dates, Prayer Times (Shafi, 12-hour format), Weather (temperature + rain probability), Working Days counter (MAM PMC, countdown to 30th May excluding Sundays), and a new Milk Packet Delivery section backed by Supabase (MilkDB).",
+  "architectural_notes": [
+    "Supabase integration: project https://ppebfdrluntbglqlreuz.supabase.co, MilkDB table with columns Date (PK), MilkDelivered (Yes/No), Packets (number)"
+  ],
+  "known_issues": [
+    "Displayed Muslim Shafi prayer timings are incorrect; needs recheck/verification.",
+    "NetworkError when attempting to fetch MilkDB records for Excel download — fetch from Supabase fails at download time"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-update-the-refill-delivered-on-section-in-frontend-src-components-gasrefillpanel-tsx-to-display-exactly-this-content-refill-delivered-on-below-dates-8th-dec-2025-21st-jan-2026-3rd-feb-2026-replace-the-current-previously-on-latest-on-layout-for-this-section-with-a-simple-list-of-the-three-dates-under-the-new-heading-text-keeping-the-existing-card-styling-consistent-with-the-rest-of-the-panel",
+      "title": "Update the \"Refill Delivered On\" section in `frontend/src/components/GasRefillPanel.tsx` to display exactly this content:\n\n\"Refill Delivered On Below Dates:\"\n- \"8th Dec 2025\"\n- \"21st Jan 2026\"\n- \"3rd Feb 2026\"\n\nReplace the current \"Previously on\" / \"Latest on\" layout for this section with a simple list of the three dates under the new heading text, keeping the existing card styling consistent with the rest of the panel.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-prayertimespanel-tsx-so-that-displayed-prayer-times-are-shown-in-12-hour-format-with-am-pm-e-g-5-12-am-instead-of-the-raw-api-time-string",
+      "title": "Update `frontend/src/components/PrayerTimesPanel.tsx` so that displayed prayer times are shown in 12-hour format with AM/PM (e.g., \"5:12 AM\") instead of the raw API time string.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-simplify-frontend-src-components-weatherpanel-tsx-to-show-only-1-the-current-temperature-and-2-the-rain-possibility-percentage-for-the-current-date-removing-the-24-hour-hourly-list-and-the-solar-times-section-from-the-ui",
+      "title": "Simplify `frontend/src/components/WeatherPanel.tsx` to show only (1) the current temperature and (2) the rain possibility percentage for the current date, removing the 24-hour hourly list and the Solar Times section from the UI.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-recheck-and-correct-the-aladhan-api-request-in-frontend-src-components-prayertimespanel-tsx-so-that-the-displayed-prayer-times-are-actually-computed-using-shafi-settings-not-hanafi-and-ensure-the-ui-label-reflects-the-calculation-configuration-being-used",
+      "title": "Recheck and correct the Aladhan API request in `frontend/src/components/PrayerTimesPanel.tsx` so that the displayed prayer times are actually computed using Shafi settings (not Hanafi), and ensure the UI label reflects the calculation configuration being used.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-minimal-in-ui-transparency-for-verification-by-showing-the-calculation-settings-being-used-e-g-method-identifier-and-school-madhab-in-the-prayer-times-panel-subtitle-or-footer-using-english-text",
+      "title": "Add minimal in-UI transparency for verification by showing the calculation settings being used (e.g., method identifier and school/madhab) in the Prayer Times panel subtitle or footer, using English text.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-frontend-ui-replace-every-occurrence-of-the-label-djf-pmc-with-mam-pmc-this-change-should-be-applied-wherever-the-text-djf-pmc-appears-across-all-frontend-components-most-likely-in-app-tsx-or-the-working-days-counter-panel",
+      "title": "In the frontend UI, replace every occurrence of the label 'DJF PMC' with 'MAM PMC'. This change should be applied wherever the text 'DJF PMC' appears across all frontend components (most likely in App.tsx or the working-days counter panel).",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-calculate-and-display-the-number-of-days-remaining-from-today-s-date-to-31st-may-of-the-current-or-next-applicable-year-excluding-sundays-from-the-count-show-this-count-in-the-ui-alongside-or-within-the-working-days-counter-panel-clearly-labelled-e-g-days-to-31st-may-excl-sundays-x",
+      "title": "Calculate and display the number of days remaining from today's date to 31st May (of the current or next applicable year), excluding Sundays from the count. Show this count in the UI alongside or within the working-days counter panel, clearly labelled (e.g., 'Days to 31st May (excl. Sundays): X').",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-frontend-src-app-tsx-update-the-countdown-target-date-from-31st-may-to-30th-may-for-the-days-to-30th-may-excl-sundays-counter-the-label-in-the-ui-should-also-be-updated-to-reflect-30th-may-instead-of-31st-may-ensure-the-calculation-still-excludes-sundays",
+      "title": "In `frontend/src/App.tsx`, update the countdown target date from 31st May to 30th May for the 'Days to 30th May (excl. Sundays)' counter. The label in the UI should also be updated to reflect '30th May' instead of '31st May'. Ensure the calculation still excludes Sundays.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-frontend-component-frontend-src-components-milkdeliverypanel-tsx-with-the-heading-milk-packet-delivery-details-it-must-include-1-a-date-input-field-2-a-milk-delivered-selector-with-options-yes-and-no-and-3-a-numeric-input-for-number-of-packets-on-form-submission-insert-a-record-into-the-supabase-table-milkdb-project-url-https-ppebfdrluntbglqlreuz-supabase-co-anon-key-eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9-eyjpc3mioijzdxbhymfzzsisinjlzii6inbwzwjmzhjsdw50ymdscwxyzxv6iiwicm9szsi6imfub24ilcjpyxqioje3nzi0mjm1otmsimv4cci6mja4nzk5otu5m30-3uk-txeukdvxcptaq6lm58px2rlpdqqtxveter4y-na-with-columns-date-primary-key-date-string-milkdelivered-text-yes-or-no-packets-number-use-the-supabase-js-client-supabase-supabase-js-configured-with-the-provided-url-and-anon-key-display-success-error-feedback-to-the-user-after-submission",
+      "title": "Create a new frontend component `frontend/src/components/MilkDeliveryPanel.tsx` with the heading 'Milk Packet Delivery Details'. It must include: (1) a date input field, (2) a 'Milk Delivered' selector with options 'Yes' and 'No', and (3) a numeric input for 'Number of Packets'. On form submission, insert a record into the Supabase table `MilkDB` (project URL: https://ppebfdrluntbglqlreuz.supabase.co, anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA) with columns: `Date` (primary key, date string), `MilkDelivered` (text: 'Yes' or 'No'), `Packets` (number). Use the Supabase JS client (`@supabase/supabase-js`) configured with the provided URL and anon key. Display success/error feedback to the user after submission.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-below-the-input-form-in-milkdeliverypanel-tsx-add-a-button-labelled-download-as-excel-that-fetches-all-records-from-the-supabase-milkdb-table-and-exports-them-as-an-excel-xlsx-file-using-a-client-side-library-e-g-xlsx-sheetjs-the-downloaded-file-should-contain-columns-date-milkdelivered-packets",
+      "title": "Below the input form in `MilkDeliveryPanel.tsx`, add a button labelled 'Download as Excel' that fetches all records from the Supabase `MilkDB` table and exports them as an Excel (.xlsx) file using a client-side library (e.g., `xlsx` / SheetJS). The downloaded file should contain columns: Date, MilkDelivered, Packets.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-integrate-milkdeliverypanel-into-frontend-src-app-tsx-so-it-is-rendered-in-the-main-dashboard-layout-consistent-with-the-existing-panel-grid-styling",
+      "title": "Integrate `MilkDeliveryPanel` into `frontend/src/App.tsx` so it is rendered in the main dashboard layout, consistent with the existing panel grid/styling.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-frontend-src-app-tsx-remove-the-target-feb-28-2026-label-and-any-associated-days-to-go-countdown-display-that-references-feb-28-these-ui-elements-must-no-longer-appear-anywhere-in-the-rendered-dashboard",
+      "title": "In `frontend/src/App.tsx`, remove the 'Target: Feb 28, 2026' label and any associated 'days to go' countdown display that references Feb 28. These UI elements must no longer appear anywhere in the rendered dashboard.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-supabase-client-initialization-in-frontend-src-lib-supabase-ts-so-that-inserting-and-fetching-records-from-the-milkdb-table-no-longer-throws-securityerror-lockmanager-request-is-not-allowed-in-this-context-the-root-cause-is-that-the-supabase-js-client-loaded-from-cdn-internally-attempts-to-use-the-web-locks-api-lockmanager-which-is-blocked-in-certain-browser-contexts-e-g-icp-hosted-frontends-replace-the-cdn-loaded-supabase-client-with-the-npm-package-supabase-supabase-js-if-not-already-installed-and-configure-it-with-auth-persistsession-false-autorefreshtoken-false-detectsessioninurl-false-to-prevent-it-from-accessing-browser-apis-that-are-unavailable-in-this-environment-ensure-the-insertmilkrecord-and-fetchmilkrecords-functions-continue-to-work-correctly-after-this-change",
+      "title": "Fix the Supabase client initialization in `frontend/src/lib/supabase.ts` so that inserting and fetching records from the MilkDB table no longer throws `SecurityError: LockManager.request is not allowed in this context`. The root cause is that the Supabase JS client (loaded from CDN) internally attempts to use the Web Locks API (`LockManager`), which is blocked in certain browser contexts (e.g., ICP-hosted frontends). Replace the CDN-loaded Supabase client with the npm package `@supabase/supabase-js` (if not already installed), and configure it with `auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }` to prevent it from accessing browser APIs that are unavailable in this environment. Ensure the `insertMilkRecord` and `fetchMilkRecords` functions continue to work correctly after this change.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-2",
+      "summary": "Change prayer timings display to 12-hour AM/PM format",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Reduce weather section to show only current temperature and rain possibility percentage for the date",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Change 'DJF PMC' label to 'MAM PMC' in the UI",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Calculate and display the number of days to 31st May excluding Sundays",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Change countdown target date from 31st May to 30th May (Saturday)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Add 'Milk Packet Delivery Details' section with date input, milk delivered (Yes/No), number of packets fields stored in Supabase MilkDB, and a button to download the table as Excel",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Remove 'Target: Feb 28, 2026' label and the 'days to Feb 28' countdown from the UI",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Fix SecurityError: LockManager.request not allowed in context — Supabase MilkDB entry submission broken",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Fix NetworkError when fetching MilkDB records for Excel download",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Fix the `fetchAllMilkRecords` function in `frontend/src/lib/supabase.ts` so that fetching all records from the Supabase `MilkDB` table no longer throws a NetworkError. The current implementation uses native `fetch` directly against the Supabase REST endpoint. Update the fetch call to ensure correct headers are set (including `apikey` and `Authorization: Bearer <anon-key>` headers) and that the REST URL is properly formed (e.g., `https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`). After the fix, the 'Download as Excel' button in `MilkDeliveryPanel.tsx` must successfully retrieve all rows and export them as a `.xlsx` file using SheetJS.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Update Gas refill section to show delivered refill dates list",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

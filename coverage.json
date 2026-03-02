@@ -1,0 +1,35 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-03-02T09:12:21.295Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 1,
+    "implemented": 0,
+    "items": [
+      {
+        "id": "REQ-14",
+        "summary": "Fix the `fetchAllMilkRecords` function in `frontend/src/lib/supabase.ts` so that fetching all records from the Supabase `MilkDB` table no longer throws a NetworkError. The current implementation uses native `fetch` directly against the Supabase REST endpoint. Update the fetch call to ensure correct headers are set (including `apikey` and `Authorization: Bearer <anon-key>` headers) and that the REST URL is properly formed (e.g., `https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`). After the fix, the 'Download as Excel' button in `MilkDeliveryPanel.tsx` must successfully retrieve all rows and export them as a `.xlsx` file using SheetJS.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/lib/supabase.ts"
+        ],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/MilkDeliveryPanel.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

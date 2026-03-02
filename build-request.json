@@ -1,0 +1,42 @@
+{
+  "kind": "build_request",
+  "title": "Fix NetworkError when fetching MilkDB records for Excel download",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-14",
+      "text": "Fix the `fetchAllMilkRecords` function in `frontend/src/lib/supabase.ts` so that fetching all records from the Supabase `MilkDB` table no longer throws a NetworkError. The current implementation uses native `fetch` directly against the Supabase REST endpoint. Update the fetch call to ensure correct headers are set (including `apikey` and `Authorization: Bearer <anon-key>` headers) and that the REST URL is properly formed (e.g., `https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`). After the fix, the 'Download as Excel' button in `MilkDeliveryPanel.tsx` must successfully retrieve all rows and export them as a `.xlsx` file using SheetJS.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent-last"
+        ],
+        "quotes": [
+          "NetworkError when attempting to fetch resource. - when i try to download the table content as excel"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking 'Download as Excel' in MilkDeliveryPanel does not throw or display a NetworkError.",
+        "All records from the Supabase MilkDB table are successfully fetched.",
+        "A .xlsx file is downloaded containing columns: Date, MilkDelivered, Packets.",
+        "The fetch request includes the correct `apikey` and `Authorization` headers using the anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA.",
+        "The REST URL used is https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*.",
+        "Insert functionality (saving a record) continues to work correctly after this change."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not change the backend Motoko file.",
+    "Do not modify any files under frontend/src/hooks/ or frontend/src/components/ui.",
+    "Preserve the existing insert (insertMilkRecord) functionality in frontend/src/lib/supabase.ts."
+  ],
+  "nonGoals": [
+    "Adding new columns or changing the MilkDB schema.",
+    "Changing the Excel file format or SheetJS library.",
+    "Modifying any other dashboard panels (Weather, Prayer Times, Gas Refill, Working Days)."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

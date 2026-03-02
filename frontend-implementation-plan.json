@@ -1,0 +1,26 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix NetworkError when fetching MilkDB records for Excel download",
+  "requirements": [
+    {
+      "id": "REQ-14",
+      "summary": "Fix the fetchAllMilkRecords function in frontend/src/lib/supabase.ts to correctly set headers (apikey and Authorization Bearer token) and use the proper Supabase REST URL so that the 'Download as Excel' button in MilkDeliveryPanel.tsx successfully retrieves all MilkDB rows and exports them as a .xlsx file without throwing a NetworkError.",
+      "acceptanceCriteria": [
+        "Clicking 'Download as Excel' in MilkDeliveryPanel does not throw or display a NetworkError.",
+        "All records from the Supabase MilkDB table are successfully fetched.",
+        "A .xlsx file is downloaded containing columns: Date, MilkDelivered, Packets.",
+        "The fetch request includes the correct `apikey` and `Authorization` headers using the anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA.",
+        "The REST URL used is https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*.",
+        "Insert functionality (saving a record) continues to work correctly after this change."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/supabase.ts",
+          "operation": "modify",
+          "description": "Update the fetchAllMilkRecords function to include the required `apikey` header and `Authorization: Bearer <anon-key>` header in the native fetch call. Ensure the REST URL is properly formed as https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*. Preserve the existing insertMilkRecord functionality without modification. The anon key to use is: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA."
+        }
+      ]
+    }
+  ]
+}
