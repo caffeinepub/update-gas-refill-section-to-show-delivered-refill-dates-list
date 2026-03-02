@@ -1,79 +1,97 @@
-// Supabase REST API client using native fetch — no npm package needed.
-// This avoids the Web Locks API (LockManager) used by @supabase/supabase-js auth,
-// which causes SecurityError in ICP-hosted sandboxed frontends.
-
 const SUPABASE_URL = 'https://ppebfdrluntbglqlreuz.supabase.co';
-const SUPABASE_ANON_KEY =
+const ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA';
 
-const REST_BASE = `${SUPABASE_URL}/rest/v1`;
-
-const HEADERS: Record<string, string> = {
-  'apikey': SUPABASE_ANON_KEY,
-  'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-  'Content-Type': 'application/json',
-  'Prefer': 'return=minimal',
-};
-
 export interface MilkRecord {
-  Date: string;
-  MilkDelivered: 'Yes' | 'No';
-  Packets: number;
+  id?: number;
+  date: string;
+  milk_delivered: boolean;
+  packets: number;
+  created_at?: string;
 }
 
-export async function insertMilkRecord(record: MilkRecord): Promise<{ error: string | null }> {
+export async function insertMilkRecord(
+  record: Omit<MilkRecord, 'id' | 'created_at'>
+): Promise<void> {
+  let response: Response;
   try {
-    const response = await fetch(`${REST_BASE}/MilkDB`, {
+    response = await globalThis.fetch(`${SUPABASE_URL}/rest/v1/MilkDB`, {
       method: 'POST',
-      headers: HEADERS,
+      mode: 'cors',
+      credentials: 'omit',
+      headers: {
+        apikey: ANON_KEY,
+        Authorization: `Bearer ${ANON_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
       body: JSON.stringify(record),
     });
+  } catch (networkErr) {
+    throw new Error(
+      `Network error while saving record: ${networkErr instanceof Error ? networkErr.message : String(networkErr)}`
+    );
+  }
 
-    if (!response.ok) {
-      let message = `HTTP ${response.status}`;
-      try {
-        const body = await response.json();
-        message = body?.message ?? body?.error ?? message;
-      } catch {
-        // ignore parse errors
+  // Supabase returns 201 (with body) or 204 (no body) for successful inserts
+  if (response.status !== 201 && response.status !== 204) {
+    let message = `Insert failed with HTTP ${response.status}`;
+    try {
+      const text = await response.text();
+      if (text) {
+        const parsed = JSON.parse(text);
+        if (parsed.message) message = parsed.message;
+        else if (parsed.error) message = parsed.error;
+        else message = text;
       }
-      return { error: message };
+    } catch {
+      // ignore parse error
     }
-
-    return { error: null };
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Unknown error' };
+    throw new Error(message);
   }
 }
 
-export async function fetchAllMilkRecords(): Promise<{ data: MilkRecord[] | null; error: string | null }> {
+export async function fetchAllMilkRecords(): Promise<MilkRecord[]> {
+  let response: Response;
   try {
-    const response = await fetch(
-      `${REST_BASE}/MilkDB?select=Date,MilkDelivered,Packets&order=Date.asc`,
+    response = await globalThis.fetch(
+      `${SUPABASE_URL}/rest/v1/MilkDB?select=*&order=date.asc`,
       {
         method: 'GET',
+        mode: 'cors',
+        credentials: 'omit',
         headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
+          apikey: ANON_KEY,
+          Authorization: `Bearer ${ANON_KEY}`,
+          Accept: 'application/json',
         },
       }
     );
+  } catch (networkErr) {
+    throw new Error(
+      `Network error while fetching records: ${networkErr instanceof Error ? networkErr.message : String(networkErr)}`
+    );
+  }
 
-    if (!response.ok) {
-      let message = `HTTP ${response.status}`;
-      try {
-        const body = await response.json();
-        message = body?.message ?? body?.error ?? message;
-      } catch {
-        // ignore parse errors
+  if (response.status !== 200) {
+    let message = `Fetch failed with HTTP ${response.status}`;
+    try {
+      const text = await response.text();
+      if (text) {
+        const parsed = JSON.parse(text);
+        if (parsed.message) message = parsed.message;
+        else if (parsed.error) message = parsed.error;
+        else message = text;
       }
-      return { data: null, error: message };
+    } catch {
+      // ignore parse error
     }
+    throw new Error(message);
+  }
 
-    const data: MilkRecord[] = await response.json();
-    return { data, error: null };
-  } catch (err) {
-    return { data: null, error: err instanceof Error ? err.message : 'Unknown error' };
+  try {
+    return (await response.json()) as MilkRecord[];
+  } catch {
+    throw new Error('Failed to parse response from Supabase');
   }
 }

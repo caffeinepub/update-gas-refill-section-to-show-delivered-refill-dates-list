@@ -1,23 +1,25 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-03-02T09:12:21.295Z",
+  "generatedAt": "2026-03-02T12:02:37.128Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 1,
-    "implemented": 0,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-14",
-        "summary": "Fix the `fetchAllMilkRecords` function in `frontend/src/lib/supabase.ts` so that fetching all records from the Supabase `MilkDB` table no longer throws a NetworkError. The current implementation uses native `fetch` directly against the Supabase REST endpoint. Update the fetch call to ensure correct headers are set (including `apikey` and `Authorization: Bearer <anon-key>` headers) and that the REST URL is properly formed (e.g., `https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`). After the fix, the 'Download as Excel' button in `MilkDeliveryPanel.tsx` must successfully retrieve all rows and export them as a `.xlsx` file using SheetJS.",
-        "status": "missing",
+        "id": "REQ-19",
+        "summary": "Update `frontend/src/components/GasRefillPanel.tsx` to display the 'Cooking Gas Changed On' section with the following layout: a 'Previously on:' sub-label listing '24th Dec 2025' and '26th Jan 2026', and a 'Latest on:' sub-label showing '2nd Mar 2026'. Additionally, update the 'Refill Delivered On Below Dates:' section to use the same 'Previously on:' / 'Latest on:' layout: 'Previously on:' listing '8th Dec 2025' and '21st Jan 2026', and 'Latest on:' showing '3rd Feb 2026'. Keep all existing card styling consistent with the rest of the panel.",
+        "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/supabase.ts"
+          "frontend/src/components/GasRefillPanel.tsx"
         ],
-        "matchedFiles": []
+        "matchedFiles": [
+          "frontend/src/components/GasRefillPanel.tsx"
+        ]
       }
     ]
   },
@@ -26,7 +28,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/MilkDeliveryPanel.tsx",
+    "frontend/src/components/GasRefillPanel.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

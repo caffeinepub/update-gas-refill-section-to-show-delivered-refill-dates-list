@@ -3,7 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 function GasRefillPanel() {
-  const refillDates = ['8th Dec 2025', '21st Jan 2026', '3rd Feb 2026'];
+  const gasChangedPrevious = ['24th Dec 2025', '26th Jan 2026'];
+  const gasChangedLatest = '2nd Mar 2026';
+
+  const refillPrevious = ['8th Dec 2025', '21st Jan 2026'];
+  const refillLatest = '3rd Feb 2026';
 
   return (
     <Card className="border-2 shadow-lg bg-card backdrop-blur h-full">
@@ -19,14 +23,24 @@ function GasRefillPanel() {
           <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
             Cooking Gas Changed On
           </h3>
-          <div className="space-y-1.5 pl-2">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xs text-muted-foreground min-w-[80px]">Previously on:</span>
-              <span className="text-sm font-medium text-foreground">24th Dec 2025</span>
+          <div className="space-y-2 pl-2">
+            {/* Previously on group */}
+            <div className="space-y-1">
+              <span className="text-xs text-muted-foreground">Previously on:</span>
+              <div className="space-y-0.5 pl-2">
+                {gasChangedPrevious.map((date, index) => (
+                  <div key={index} className="text-sm font-medium text-foreground">
+                    {date}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-xs text-muted-foreground min-w-[80px]">Latest on:</span>
-              <span className="text-sm font-bold text-accent">26th Jan 2026</span>
+            {/* Latest on group */}
+            <div className="space-y-1">
+              <span className="text-xs text-muted-foreground">Latest on:</span>
+              <div className="pl-2">
+                <span className="text-sm font-bold text-accent">{gasChangedLatest}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -38,12 +52,25 @@ function GasRefillPanel() {
           <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
             Refill Delivered On Below Dates:
           </h3>
-          <div className="space-y-1.5 pl-2">
-            {refillDates.map((date, index) => (
-              <div key={index} className="flex items-baseline gap-2">
-                <span className="text-sm font-medium text-foreground">{date}</span>
+          <div className="space-y-2 pl-2">
+            {/* Previously on group */}
+            <div className="space-y-1">
+              <span className="text-xs text-muted-foreground">Previously on:</span>
+              <div className="space-y-0.5 pl-2">
+                {refillPrevious.map((date, index) => (
+                  <div key={index} className="text-sm font-medium text-foreground">
+                    {date}
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            {/* Latest on group */}
+            <div className="space-y-1">
+              <span className="text-xs text-muted-foreground">Latest on:</span>
+              <div className="pl-2">
+                <span className="text-sm font-bold text-accent">{refillLatest}</span>
+              </div>
+            </div>
           </div>
         </div>
       </CardContent>

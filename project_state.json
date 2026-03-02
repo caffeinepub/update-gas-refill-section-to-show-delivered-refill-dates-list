@@ -1,15 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 27,
   "summary": "Dashboard app with multiple panels: Gas Refill dates, Prayer Times (Shafi, 12-hour format), Weather (temperature + rain probability), Working Days counter (MAM PMC, countdown to 30th May excluding Sundays), and a new Milk Packet Delivery section backed by Supabase (MilkDB).",
   "architectural_notes": [
     "Supabase integration: project https://ppebfdrluntbglqlreuz.supabase.co, MilkDB table with columns Date (PK), MilkDelivered (Yes/No), Packets (number)"
   ],
   "known_issues": [
     "Displayed Muslim Shafi prayer timings are incorrect; needs recheck/verification.",
-    "NetworkError when attempting to fetch MilkDB records for Excel download — fetch from Supabase fails at download time"
+    "NetworkError when attempting to fetch MilkDB records for Excel download — fetch from Supabase fails at download time",
+    "MilkDB record insertion (previously working) now also fails with NetworkError — both insert and fetch from Supabase MilkDB are broken",
+    "Supabase REST API returning 'invalid API key' error — anon key may be malformed or missing in request headers"
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-update-the-refill-delivered-on-section-in-frontend-src-components-gasrefillpanel-tsx-to-display-exactly-this-content-refill-delivered-on-below-dates-8th-dec-2025-21st-jan-2026-3rd-feb-2026-replace-the-current-previously-on-latest-on-layout-for-this-section-with-a-simple-list-of-the-three-dates-under-the-new-heading-text-keeping-the-existing-card-styling-consistent-with-the-rest-of-the-panel",
@@ -114,6 +116,46 @@
         "REQ-13"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-rewrite-frontend-src-lib-supabase-ts-so-that-both-insertmilkrecord-and-fetchallmilkrecords-use-native-fetch-calls-against-the-supabase-rest-api-project-url-https-ppebfdrluntbglqlreuz-supabase-co-anon-key-eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9-eyjpc3mioijzdxbhymfzzsisinjlzii6inbwzwjmzhjsdw50ymdscwxyzxv6iiwicm9szsi6imfub24ilcjpyxqioje3nzi0mjm1otmsimv4cci6mja4nzk5otu5m30-3uk-txeukdvxcptaq6lm58px2rlpdqqtxveter4y-na-with-all-required-headers-set-on-every-request-apikey-anon-key-authorization-bearer-anon-key-content-type-application-json-and-prefer-return-minimal-for-inserts-the-insert-endpoint-must-be-post-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-with-the-record-body-serialised-as-json-the-fetch-endpoint-must-be-get-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-select-do-not-use-the-supabase-supabase-js-package-keep-the-implementation-as-a-pure-native-fetch-rest-client-to-avoid-any-sdk-level-browser-api-dependencies-lockmanager-indexeddb-etc-both-functions-must-resolve-successfully-and-throw-return-a-descriptive-error-string-on-failure",
+      "title": "Rewrite `frontend/src/lib/supabase.ts` so that both `insertMilkRecord` and `fetchAllMilkRecords` use native `fetch` calls against the Supabase REST API (project URL: https://ppebfdrluntbglqlreuz.supabase.co, anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA) with all required headers set on every request: `apikey: <anon-key>`, `Authorization: Bearer <anon-key>`, `Content-Type: application/json`, and `Prefer: return=minimal` (for inserts). The insert endpoint must be `POST https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB` with the record body serialised as JSON. The fetch endpoint must be `GET https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`. Do not use the `@supabase/supabase-js` package — keep the implementation as a pure native-fetch REST client to avoid any SDK-level browser API dependencies (LockManager, IndexedDB, etc.). Both functions must resolve successfully and throw/return a descriptive error string on failure.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-audit-and-fix-frontend-src-lib-supabase-ts-so-that-every-native-fetch-call-to-the-supabase-rest-api-sends-the-anon-key-correctly-ensure-the-apikey-header-and-authorization-bearer-anon-key-header-are-both-set-verbatim-using-the-exact-anon-key-string-eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9-eyjpc3mioijzdxbhymfzzsisinjlzii6inbwzwjmzhjsdw50ymdscwxyzxv6iiwicm9szsi6imfub24ilcjpyxqioje3nzi0mjm1otmsimv4cci6mja4nzk5otu5m30-3uk-txeukdvxcptaq6lm58px2rlpdqqtxveter4y-na-the-key-must-not-be-truncated-url-encoded-split-across-lines-or-modified-in-any-way-both-insertmilkrecord-post-to-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-and-fetchallmilkrecords-get-to-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-select-must-include-these-headers-on-every-request-add-content-type-application-json-and-prefer-return-minimal-for-insert-requests-after-the-fix-neither-call-should-return-a-401-invalid-api-key-response-from-supabase",
+      "title": "Audit and fix `frontend/src/lib/supabase.ts` so that every native `fetch` call to the Supabase REST API sends the anon key correctly. Ensure the `apikey` header and `Authorization: Bearer <anon-key>` header are both set verbatim using the exact anon key string: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA`. The key must not be truncated, URL-encoded, split across lines, or modified in any way. Both `insertMilkRecord` (POST to `https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB`) and `fetchAllMilkRecords` (GET to `https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`) must include these headers on every request. Add `Content-Type: application/json` and `Prefer: return=minimal` for insert requests. After the fix, neither call should return a 401 'invalid API key' response from Supabase.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rewrite-frontend-src-lib-supabase-ts-completely-from-scratch-as-a-pure-native-fetch-rest-client-both-insertmilkrecord-and-fetchallmilkrecords-must-use-window-fetch-or-global-fetch-with-the-following-headers-set-verbatim-on-every-single-request-the-anon-key-string-must-appear-as-a-single-unbroken-literal-in-the-source-code-and-must-not-be-split-concatenated-stored-in-an-intermediate-variable-that-could-be-truncated-or-modified-in-any-way-apikey-eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9-eyjpc3mioijzdxbhymfzzsisinjlzii6inbwzwjmzhjsdw50ymdscwxyzxv6iiwicm9szsi6imfub24ilcjpyxqioje3nzi0mjm1otmsimv4cci6mja4nzk5otu5m30-3uk-txeukdvxcptaq6lm58px2rlpdqqtxveter4y-na-authorization-bearer-eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9-eyjpc3mioijzdxbhymfzzsisinjlzii6inbwzwjmzhjsdw50ymdscwxyzxv6iiwicm9szsi6imfub24ilcjpyxqioje3nzi0mjm1otmsimv4cci6mja4nzk5otu5m30-3uk-txeukdvxcptaq6lm58px2rlpdqqtxveter4y-na-content-type-application-json-all-requests-prefer-return-minimal-insert-requests-only-endpoints-insert-post-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-with-the-record-body-as-json-fetch-all-get-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-select-do-not-use-supabase-supabase-js-or-any-supabase-sdk-do-not-use-xmlhttprequest-both-functions-must-return-the-resolved-data-on-success-and-throw-or-return-a-descriptive-error-string-on-failure-the-file-must-export-insertmilkrecord-and-fetchallmilkrecords-so-that-milkdeliverypanel-tsx-continues-to-work-without-changes",
+      "title": "Rewrite `frontend/src/lib/supabase.ts` completely from scratch as a pure native-fetch REST client. Both `insertMilkRecord` and `fetchAllMilkRecords` must use `window.fetch` (or global `fetch`) with the following headers set verbatim on every single request — the anon key string must appear as a single unbroken literal in the source code and must not be split, concatenated, stored in an intermediate variable that could be truncated, or modified in any way:\n\n- `apikey`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA`\n- `Authorization`: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA`\n- `Content-Type`: `application/json` (all requests)\n- `Prefer`: `return=minimal` (insert requests only)\n\nEndpoints:\n- Insert: `POST https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB` with the record body as JSON.\n- Fetch all: `GET https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*`\n\nDo NOT use `@supabase/supabase-js` or any Supabase SDK. Do NOT use XMLHttpRequest. Both functions must return the resolved data on success and throw (or return) a descriptive error string on failure. The file must export `insertMilkRecord` and `fetchAllMilkRecords` so that `MilkDeliveryPanel.tsx` continues to work without changes.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rewrite-frontend-src-lib-supabase-ts-to-fix-the-persistent-failed-to-fetch-networkerror-affecting-both-insertmilkrecord-and-fetchallmilkrecords-the-root-cause-is-likely-a-cors-or-request-construction-issue-when-calling-the-supabase-rest-api-from-an-icp-hosted-frontend-apply-the-following-fixes-1-use-the-global-fetch-not-window-fetch-to-make-all-requests-2-add-mode-cors-and-credentials-omit-explicitly-to-every-fetch-call-s-options-object-3-ensure-all-headers-are-set-as-a-plain-object-literal-never-as-a-headers-instance-with-the-exact-anon-key-eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9-eyjpc3mioijzdxbhymfzzsisinjlzii6inbwzwjmzhjsdw50ymdscwxyzxv6iiwicm9szsi6imfub24ilcjpyxqioje3nzi0mjm1otmsimv4cci6mja4nzk5otu5m30-3uk-txeukdvxcptaq6lm58px2rlpdqqtxveter4y-na-set-verbatim-in-both-apikey-and-authorization-bearer-key-headers-on-every-request-4-the-insert-endpoint-is-post-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-with-headers-content-type-application-json-and-prefer-return-minimal-in-addition-to-auth-headers-5-the-fetch-endpoint-is-get-https-ppebfdrluntbglqlreuz-supabase-co-rest-v1-milkdb-select-with-auth-headers-only-6-both-functions-must-throw-a-descriptive-error-string-on-non-ok-http-status-or-network-failure-7-do-not-use-supabase-supabase-js-or-any-supabase-sdk-do-not-use-xmlhttprequest-the-file-must-continue-to-export-insertmilkrecord-and-fetchallmilkrecords-so-that-milkdeliverypanel-tsx-requires-no-changes",
+      "title": "Rewrite `frontend/src/lib/supabase.ts` to fix the persistent 'Failed to fetch' / NetworkError affecting both `insertMilkRecord` and `fetchAllMilkRecords`. The root cause is likely a CORS or request-construction issue when calling the Supabase REST API from an ICP-hosted frontend. Apply the following fixes: (1) Use the global `fetch` (not `window.fetch`) to make all requests. (2) Add `mode: 'cors'` and `credentials: 'omit'` explicitly to every fetch call's options object. (3) Ensure all headers are set as a plain object literal — never as a `Headers` instance — with the exact anon key `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZWJmZHJsdW50YmdscWxyZXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MjM1OTMsImV4cCI6MjA4Nzk5OTU5M30.3uk-txeUkdVxcPtAQ6lM58Px2rlpdqQTxVEter4Y_nA` set verbatim in both `apikey` and `Authorization: Bearer <key>` headers on every request. (4) The insert endpoint is `POST https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB` with headers `Content-Type: application/json` and `Prefer: return=minimal` in addition to auth headers. (5) The fetch endpoint is `GET https://ppebfdrluntbglqlreuz.supabase.co/rest/v1/MilkDB?select=*` with auth headers only. (6) Both functions must throw a descriptive error string on non-OK HTTP status or network failure. (7) Do NOT use `@supabase/supabase-js` or any Supabase SDK. Do NOT use XMLHttpRequest. The file must continue to export `insertMilkRecord` and `fetchAllMilkRecords` so that `MilkDeliveryPanel.tsx` requires no changes.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-components-gasrefillpanel-tsx-to-display-the-cooking-gas-changed-on-section-with-the-following-layout-a-previously-on-sub-label-listing-24th-dec-2025-and-26th-jan-2026-and-a-latest-on-sub-label-showing-2nd-mar-2026-additionally-update-the-refill-delivered-on-below-dates-section-to-use-the-same-previously-on-latest-on-layout-previously-on-listing-8th-dec-2025-and-21st-jan-2026-and-latest-on-showing-3rd-feb-2026-keep-all-existing-card-styling-consistent-with-the-rest-of-the-panel",
+      "title": "Update `frontend/src/components/GasRefillPanel.tsx` to display the 'Cooking Gas Changed On' section with the following layout: a 'Previously on:' sub-label listing '24th Dec 2025' and '26th Jan 2026', and a 'Latest on:' sub-label showing '2nd Mar 2026'. Additionally, update the 'Refill Delivered On Below Dates:' section to use the same 'Previously on:' / 'Latest on:' layout: 'Previously on:' listing '8th Dec 2025' and '21st Jan 2026', and 'Latest on:' showing '3rd Feb 2026'. Keep all existing card styling consistent with the rest of the panel.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -177,6 +219,18 @@
       "reqIds": [
         "REQ-14"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Fix 'invalid API key' error thrown by Supabase REST calls in MilkDeliveryPanel — likely an issue with how the anon key is passed in headers",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Update GasRefillPanel to show two sections: 'Cooking Gas Changed On' (Previously: 24th Dec 2025, 26th Jan 2026; Latest: 2nd Mar 2026) and 'Refill Delivered On Below Dates' (Previously: 8th Dec 2025, 21st Jan 2026; Latest: 3rd Feb 2026)",
+      "reqIds": [],
       "status": "pending"
     }
   ],

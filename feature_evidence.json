@@ -1,4 +1,24 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-update-frontend-src-components-gasrefillpanel-tsx-to-display-the-cooking-gas-changed-on-section-with-the-following-layout-a-previously-on-sub-label-listing-24th-dec-2025-and-26th-jan-2026-and-a-latest-on-sub-label-showing-2nd-mar-2026-additionally-update-the-refill-delivered-on-below-dates-section-to-use-the-same-previously-on-latest-on-layout-previously-on-listing-8th-dec-2025-and-21st-jan-2026-and-latest-on-showing-3rd-feb-2026-keep-all-existing-card-styling-consistent-with-the-rest-of-the-panel",
+      "featureTitle": "Update `frontend/src/components/GasRefillPanel.tsx` to display the 'Cooking Gas Changed On' section with the following layout: a 'Previously on:' sub-label listing '24th Dec 2025' and '26th Jan 2026', and a 'Latest on:' sub-label showing '2nd Mar 2026'. Additionally, update the 'Refill Delivered On Below Dates:' section to use the same 'Previously on:' / 'Latest on:' layout: 'Previously on:' listing '8th Dec 2025' and '21st Jan 2026', and 'Latest on:' showing '3rd Feb 2026'. Keep all existing card styling consistent with the rest of the panel.",
+      "files": [
+        "frontend/src/components/GasRefillPanel.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-19"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

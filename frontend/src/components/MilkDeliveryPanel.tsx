@@ -15,19 +15,17 @@ type DownloadStatus = 'idle' | 'loading' | 'error';
  * Uses only browser-native APIs — no CDN or external library required.
  */
 function downloadAsExcel(records: MilkRecord[]): void {
-  // Build CSV content (Excel opens .csv files natively)
   const header = ['Date', 'MilkDelivered', 'Packets'];
   const rows = records.map((r) => [
-    r.Date,
-    r.MilkDelivered,
-    String(r.Packets),
+    r.date,
+    r.milk_delivered ? 'Yes' : 'No',
+    String(r.packets),
   ]);
 
   const csvContent = [header, ...rows]
     .map((row) =>
       row
         .map((cell) => {
-          // Escape cells that contain commas, quotes, or newlines
           const str = String(cell);
           if (str.includes(',') || str.includes('"') || str.includes('\n')) {
             return `"${str.replace(/"/g, '""')}"`;
@@ -75,25 +73,20 @@ function MilkDeliveryPanel() {
     setSubmitStatus('loading');
     setSubmitError('');
 
-    const record: MilkRecord = {
-      Date: date,
-      MilkDelivered: milkDelivered as 'Yes' | 'No',
-      Packets: packetsNum,
-    };
-
-    const { error } = await insertMilkRecord(record);
-
-    if (error) {
-      setSubmitError(error);
-      setSubmitStatus('error');
-    } else {
+    try {
+      await insertMilkRecord({
+        date,
+        milk_delivered: milkDelivered === 'Yes',
+        packets: packetsNum,
+      });
       setSubmitStatus('success');
-      // Reset form
       setDate('');
       setMilkDelivered('');
       setPackets('');
-      // Auto-reset success after 3s
       setTimeout(() => setSubmitStatus('idle'), 3000);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to save record. Please try again.');
+      setSubmitStatus('error');
     }
   };
 
@@ -101,19 +94,12 @@ function MilkDeliveryPanel() {
     setDownloadStatus('loading');
     setDownloadError('');
 
-    const { data, error } = await fetchAllMilkRecords();
-
-    if (error || !data) {
-      setDownloadError(error ?? 'Failed to fetch records.');
-      setDownloadStatus('error');
-      return;
-    }
-
     try {
-      downloadAsExcel(data);
+      const records = await fetchAllMilkRecords();
+      downloadAsExcel(records);
       setDownloadStatus('idle');
     } catch (err) {
-      setDownloadError(err instanceof Error ? err.message : 'Failed to generate file.');
+      setDownloadError(err instanceof Error ? err.message : 'Failed to download. Please try again.');
       setDownloadStatus('error');
     }
   };
@@ -151,7 +137,6 @@ function MilkDeliveryPanel() {
             <Select
               value={milkDelivered}
               onValueChange={(val) => setMilkDelivered(val as 'Yes' | 'No')}
-              required
             >
               <SelectTrigger id="milk-delivered" className="bg-secondary border-border text-foreground">
                 <SelectValue placeholder="Select Yes or No" />
