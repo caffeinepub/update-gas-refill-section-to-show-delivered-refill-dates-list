@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Flame } from "lucide-react";
 
-const gasChangedPrevious = ["24th Dec 2025", "26th Jan 2026"];
-const gasChangedLatest = "2nd Mar 2026";
+const gasChangedPrevious = ["24th Dec 2025", "26th Jan 2026", "2nd Mar 2026"];
+const gasChangedLatest = "5th Apr 2026";
 
 const refillPrevious = ["8th Dec 2025", "21st Jan 2026", "3rd Feb 2026"];
 const refillLatest = "19th Mar 2026";
